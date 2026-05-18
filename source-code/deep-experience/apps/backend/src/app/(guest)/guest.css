@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Ensure guest pages use proper box model and font */
+.guest-root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.guest-root *,
+.guest-root *::before,
+.guest-root *::after {
+  box-sizing: border-box;
+}
+
+/* Override any conflicting globals.css reset for guest pages */
+.guest-root input,
+.guest-root textarea,
+.guest-root button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Ensure links in guest don't inherit admin styles */
+.guest-root a {
+  text-decoration: none;
+  color: inherit;
+}
+.guest-root a:hover {
+  text-decoration: none;
+}

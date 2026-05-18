@@ -1,0 +1,450 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Supabase Pooler (PgBouncer) sits at DATABASE_URL; raw Postgres sits at DIRECT_URL.
+  // Prisma migrations need a real connection (no prepared statement cache), so they
+  // route through directUrl. Runtime queries go through the pooler.
+  directUrl = env("DIRECT_URL")
+}
+
+// --- Enums (kept as String fields from the SQLite era; Postgres migration does
+// not convert them yet — see docs/deployment.md §将来対応). ---
+
+// TourType: GROUP | PRIVATE
+// BookingType: DATE_AND_TIME | DATE | PASS
+// MeetingType: MEET_ON_LOCATION | PICK_UP | MEET_ON_LOCATION_OR_PICK_UP
+// TicketSupport: PER_PERSON | PER_BOOKING | NOT_REQUIRED
+// CapacityModel: FREE_SALE | LIMITED | ON_REQUEST
+// RuleType: WEEKLY | YEARLY | RANGE | SINGLE
+// ScheduleStatus: OPEN | FULL | CANCELLED | COMPLETED
+// BookingStatus: PENDING | CONFIRMED | CANCELLED | IN_PROGRESS | COMPLETED | EXPIRED
+// AssignmentStatus: PENDING | ACCEPTED | DECLINED
+// BookingSource: DIRECT | OTA | AGENT
+
+// --- Models ---
+
+model Guest {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  nationality  String?  // ISO 3166-1 alpha-2
+  language     String?  // ISO 639-1
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings  Booking[]
+  favorites Favorite[]
+}
+
+// Favorite = guest's bookmarked tour
+model Favorite {
+  id        String   @id @default(cuid())
+  guestId   String
+  tourId    String
+  createdAt DateTime @default(now())
+
+  guest Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  tour  Tour  @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@unique([guestId, tourId])
+  @@index([guestId])
+  @@index([tourId])
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Spot = physical location / facility (施設)
+model Spot {
+  id              String   @id @default(cuid())
+  name            String
+  nameEn          String   @default("")
+  description     String   @default("")
+  descriptionEn   String   @default("")
+  imageUrls       String   @default("[]") // JSON array
+  lat             Float
+  lng             Float
+  locationName    String   @default("")
+  category        String   @default("")
+  contactEmail    String?
+  contactPhone    String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tours     Tour[]
+  spotMedia SpotMedia[]
+}
+
+// Tour = guided tour product (ガイドツアー / 商品)
+model Tour {
+  id               String   @id @default(cuid())
+  title            String
+  titleEn          String
+  description      String
+  descriptionEn    String
+  imageUrls        String   @default("[]") // JSON array stored as string (legacy from SQLite, kept on Postgres for compatibility)
+  meetingPointLat  Float
+  meetingPointLng  Float
+  meetingPointName String
+  durationMinutes  Int
+  pricePerPersonCents Int   // DEPRECATED: use Rate + RatePrice instead. Kept for migration.
+  maxParticipants  Int
+  tourType         String   @default("GROUP") // GROUP | PRIVATE
+  category         String
+
+  // Bokun-compatible fields
+  bookingType      String   @default("DATE_AND_TIME") // DATE_AND_TIME | DATE | PASS
+  meetingType      String   @default("MEET_ON_LOCATION") // MEET_ON_LOCATION | PICK_UP | MEET_ON_LOCATION_OR_PICK_UP
+  ticketSupport    String   @default("NOT_REQUIRED") // PER_PERSON | PER_BOOKING | NOT_REQUIRED
+  capacityModel    String   @default("LIMITED") // FREE_SALE | LIMITED | ON_REQUEST
+
+  // Spot reference
+  spotId           String?
+
+  // Area
+  area             String   @default("")
+  areaDetail       String   @default("")
+
+  // Policy & Payment
+  cancellationPolicy String  @default("")
+  paymentMethod      String  @default("ON_SITE") // ON_SITE | ONLINE | BOTH
+
+  // Languages supported by this tour
+  supportedLanguages String  @default("[\"ja\",\"en\"]") // JSON array
+
+  // Extended multilingual content
+  highlightsJa       String  @default("")
+  highlightsEn       String  @default("")
+  inclusionsJa       String  @default("")
+  inclusionsEn       String  @default("")
+  importantNotesJa   String  @default("")
+  importantNotesEn   String  @default("")
+  bookingNotesJa     String  @default("")
+  bookingNotesEn     String  @default("")
+  meetingPointDescJa String  @default("")
+  meetingPointDescEn String  @default("")
+  accessInfoJa       String  @default("")
+  accessInfoEn       String  @default("")
+  tags               String  @default("[]") // JSON array
+
+  // Inventory & booking policy (Issue #1)
+  dailyCapacity                 Int?
+  maxDeparturesPerDay           Int?
+  bookingCutoffMinutes          Int?
+  freeCancellationDeadlineHours Int?
+
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  spot               Spot?              @relation(fields: [spotId], references: [id])
+  schedules          TourSchedule[]
+  pricingCategories  PricingCategory[]
+  rates              Rate[]
+  capacityRules      CapacityRule[]
+  closeOuts          CloseOut[]
+  tourMedia          TourMedia[]
+  favorites          Favorite[]
+
+  @@index([spotId])
+}
+
+// PricingCategory = participant type (Adult / Child / Infant)
+model PricingCategory {
+  id        String   @id @default(cuid())
+  tourId    String
+  label     String   // "Adult", "Child", "Infant"
+  labelJa   String   @default("") // "大人", "子供", "幼児"
+  minAge    Int?
+  maxAge    Int?
+  sortOrder Int      @default(0)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  tour       Tour              @relation(fields: [tourId], references: [id])
+  ratePrices RatePrice[]
+  passengers BookingPassenger[]
+
+  @@index([tourId])
+}
+
+// Rate = pricing plan (Standard / Early Bird / Group Discount)
+model Rate {
+  id            String   @id @default(cuid())
+  tourId        String
+  label         String   // "Standard", "Early Bird"
+  labelJa       String   @default("") // "通常料金", "早割"
+  isDefault     Boolean  @default(false)
+  minPerBooking Int?     // min passengers per booking for this rate
+  maxPerBooking Int?     // max passengers per booking for this rate
+  validFrom     DateTime? // rate validity period start
+  validTo       DateTime? // rate validity period end
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  tour       Tour              @relation(fields: [tourId], references: [id])
+  ratePrices RatePrice[]
+  bookings   Booking[]
+
+  @@index([tourId])
+}
+
+// RatePrice = price per PricingCategory per Rate (cross table)
+model RatePrice {
+  id                String @id @default(cuid())
+  rateId            String
+  pricingCategoryId String
+  priceCents        Int    // USD cents
+
+  rate            Rate            @relation(fields: [rateId], references: [id])
+  pricingCategory PricingCategory @relation(fields: [pricingCategoryId], references: [id])
+
+  @@unique([rateId, pricingCategoryId])
+  @@index([rateId])
+  @@index([pricingCategoryId])
+}
+
+// CapacityRule = recurring availability schedule (可能枠ルール)
+model CapacityRule {
+  id              String    @id @default(cuid())
+  tourId          String
+  ruleType        String    // WEEKLY | YEARLY | RANGE | SINGLE
+  daysOfWeek      String    @default("[]") // JSON array: [0..6] (0=Sun, 1=Mon, ...)
+  startDate       DateTime? // rule start date (for RANGE type)
+  endDate         DateTime? // rule end date (for RANGE type, null = no end)
+  singleDate      DateTime? // for SINGLE type
+  startTimes      String    @default("[]") // JSON array: [{"hour":10,"minute":0}, ...]
+  capacity        Int       // seats per departure
+  minParticipants Int       @default(1) // minimum to operate
+  maxPerBooking   Int?      // max per single booking (null = capacity)
+  minPerBooking   Int       @default(1) // min per single booking
+  priority        Int       @default(0) // higher = higher priority
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@index([tourId])
+  @@map("AvailabilityRule")
+}
+
+// CloseOut = exception block on specific date/time
+model CloseOut {
+  id        String   @id @default(cuid())
+  tourId    String
+  date      DateTime // the date to close (date part only)
+  startTime String?  // JSON: {"hour":10,"minute":0} — null = close all departures
+  reason    String?
+  createdAt DateTime @default(now())
+
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@index([tourId])
+  @@index([date])
+}
+
+model TourSchedule {
+  id            String   @id @default(cuid())
+  tourId        String
+  startDateTime DateTime
+  endDateTime   DateTime
+  capacity      Int      @default(0) // remaining seats (decremented on booking)
+  status        String   @default("OPEN") // OPEN | FULL | CANCELLED | COMPLETED
+  sourceRuleId  String?  // FK to AvailabilityRule that generated this (null = manual)
+  createdAt     DateTime @default(now())
+
+  tour     Tour      @relation(fields: [tourId], references: [id])
+  bookings Booking[]
+
+  @@index([tourId])
+  @@index([startDateTime])
+  @@index([status])
+}
+
+model Booking {
+  id                  String    @id @default(cuid())
+  tourScheduleId      String
+  rateId              String?   // FK → Rate (null for legacy bookings)
+  guestId             String?   // FK → Guest (null for anonymous bookings)
+  travelerName        String
+  travelerEmail       String
+  travelerPhone       String?
+  travelerNationality String?   // ISO 3166-1 alpha-2
+  travelerLanguage    String?   // ISO 639-1
+  numberOfGuests      Int       // DEPRECATED: use passengers count. Kept for migration.
+  totalPriceCents     Int       @default(0) // computed total in USD cents
+  specialRequests     String?
+  status              String    @default("PENDING") // PENDING | CONFIRMED | CANCELLED | IN_PROGRESS | COMPLETED | EXPIRED
+  // Assignment lifecycle between Booking and its TourSchedule.
+  // TENTATIVE: schedule may still be reassigned by supply-side logic (Issue #8 FINALIZE flow).
+  // FINALIZED: schedule is locked in; must not be auto-reassigned.
+  // State transitions are enforced at the service layer — no DB constraint is added intentionally.
+  assignmentState     String    @default("TENTATIVE") // TENTATIVE | FINALIZED
+  bookingSource       String    @default("DIRECT") // DIRECT | OTA | AGENT
+  bookingChannel      String?   // channel identifier: "deepex", "viator", "klook"
+  externalBookingId   String?   // external system booking ID
+  confirmationCode    String?   // booking confirmation code
+  cancelledAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  tourSchedule TourSchedule       @relation(fields: [tourScheduleId], references: [id])
+  rate         Rate?               @relation(fields: [rateId], references: [id])
+  guest        Guest?              @relation(fields: [guestId], references: [id])
+  assignments    GuideAssignment[]
+  passengers     BookingPassenger[]
+  notifications  Notification[]
+
+  @@index([tourScheduleId])
+  @@index([travelerEmail])
+  @@index([guestId])
+  @@index([status])
+}
+
+// BookingPassenger = individual participant in a booking
+model BookingPassenger {
+  id                String @id @default(cuid())
+  bookingId         String
+  pricingCategoryId String
+  firstName         String
+  lastName          String
+  priceCents        Int    // price for this passenger in USD cents
+
+  booking         Booking         @relation(fields: [bookingId], references: [id])
+  pricingCategory PricingCategory @relation(fields: [pricingCategoryId], references: [id])
+
+  @@index([bookingId])
+}
+
+model Guide {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  name            String
+  profileImageUrl String?
+  bio             String?
+  languages       String   @default("[]") // JSON array stored as string (legacy from SQLite, kept on Postgres for compatibility)
+  areas           String   @default("[]") // JSON array stored as string (legacy from SQLite, kept on Postgres for compatibility)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  assignments GuideAssignment[]
+}
+
+model GuideAssignment {
+  id          String    @id @default(cuid())
+  bookingId   String
+  guideId     String
+  status        String    @default("PENDING") // PENDING | ACCEPTED | DECLINED
+  declineReason String?
+  assignedAt    DateTime  @default(now())
+  respondedAt   DateTime?
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+  guide   Guide   @relation(fields: [guideId], references: [id])
+
+  @@index([bookingId])
+  @@index([guideId])
+  @@index([status])
+}
+
+// --- Notification ---
+
+model Notification {
+  id             String    @id @default(cuid())
+  recipientEmail String
+  bookingId      String?
+  type           String    // BOOKING_CONFIRMED | GUIDE_DECLINED
+  titleEn        String
+  messageEn      String
+  isRead         Boolean   @default(false)
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  @@index([recipientEmail])
+  @@index([createdAt])
+  @@index([bookingId])
+}
+
+// --- Media Management ---
+
+model Media {
+  id           String   @id @default(cuid())
+  filename     String   // original filename
+  originalUrl  String   // full-size image URL
+  thumbnailUrl String   // thumbnail image URL
+  mimeType     String   // e.g. "image/jpeg"
+  sizeBytes    Int      // file size in bytes
+  width        Int?     // image width in px
+  height       Int?     // image height in px
+  alt          String   @default("") // alt text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tourMedia TourMedia[]
+  spotMedia SpotMedia[]
+}
+
+model TourMedia {
+  id        String @id @default(cuid())
+  tourId    String
+  mediaId   String
+  sortOrder Int    @default(0)
+
+  tour  Tour  @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  media Media @relation(fields: [mediaId], references: [id])
+
+  @@unique([tourId, mediaId])
+  @@index([tourId])
+  @@index([mediaId])
+}
+
+model SpotMedia {
+  id        String @id @default(cuid())
+  spotId    String
+  mediaId   String
+  sortOrder Int    @default(0)
+
+  spot  Spot  @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  media Media @relation(fields: [mediaId], references: [id])
+
+  @@unique([spotId, mediaId])
+  @@index([spotId])
+  @@index([mediaId])
+}
+
+// JobExecutionLog = batch / delayed job execution record.
+// Status values: RUNNING | SUCCESS | FAILED (String — legacy from SQLite era).
+// payload holds job-specific JSON (e.g., warn bookingIds for FINALIZE_BOOKINGS).
+// Keep payload free of PII — store IDs only, never traveler details.
+model JobExecutionLog {
+  id             String    @id @default(cuid())
+  jobName        String
+  status         String    @default("RUNNING")
+  startedAt      DateTime  @default(now())
+  finishedAt     DateTime?
+  processedCount Int?
+  warnCount      Int?
+  errorMessage   String?
+  payload        String?
+
+  @@index([jobName])
+  @@index([startedAt])
+}
