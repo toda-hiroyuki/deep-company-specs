@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
   {
-    href: "/operator/dashboard",
+    href: "/company/dashboard",
     label: "ダッシュボード",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -14,7 +14,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/operator/facility",
+    href: "/company/facility",
     label: "施設情報",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -23,7 +23,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/operator/activities",
+    href: "/company/activities",
     label: "アクティビティ管理",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -32,7 +32,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/operator/schedules",
+    href: "/company/schedules",
     label: "スケジュール管理",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -41,7 +41,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/operator/bookings",
+    href: "/company/bookings",
     label: "予約管理",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -50,7 +50,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/operator/payments",
+    href: "/company/payments",
     label: "支払い確認",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -59,7 +59,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/operator/settings",
+    href: "/company/settings",
     label: "設定",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +72,7 @@ const NAV_ITEMS = [
 function OperatorLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  if (pathname === "/operator/login" || pathname.startsWith("/operator/login/")) {
+  if (pathname === "/company/login" || pathname.startsWith("/company/login/")) {
     return <>{children}</>;
   }
 
@@ -100,7 +100,7 @@ function OperatorLayoutInner({ children }: { children: React.ReactNode }) {
             style={{ width: "100%", color: "#9ca3af" }}
             onClick={() => {
               localStorage.removeItem("operator_token");
-              window.location.href = "/operator/login";
+              window.location.href = "/company/login";
             }}
           >
             ログアウト
