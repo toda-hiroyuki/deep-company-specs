@@ -1024,6 +1024,45 @@ async function main() {
     console.log(`GuideAssignments created: 4 entries`);
   }
 
+  // --- Companies (事業者) ---
+  const company1 = await prisma.company.upsert({
+    where: { email: "company1@example.com" },
+    update: {},
+    create: {
+      email: "company1@example.com",
+      passwordHash: hashSync("company123", 10),
+      name: "施設A",
+    },
+  });
+  const company2 = await prisma.company.upsert({
+    where: { email: "company2@example.com" },
+    update: {},
+    create: {
+      email: "company2@example.com",
+      passwordHash: hashSync("company123", 10),
+      name: "施設B",
+    },
+  });
+  console.log(`Companies created: ${company1.name}, ${company2.name}`);
+
+  // Link companies to spots
+  await prisma.companySpot.upsert({
+    where: { companyId_spotId: { companyId: company1.id, spotId: spot1.id } },
+    update: {},
+    create: { companyId: company1.id, spotId: spot1.id },
+  });
+  await prisma.companySpot.upsert({
+    where: { companyId_spotId: { companyId: company1.id, spotId: spot2.id } },
+    update: {},
+    create: { companyId: company1.id, spotId: spot2.id },
+  });
+  await prisma.companySpot.upsert({
+    where: { companyId_spotId: { companyId: company2.id, spotId: spot3.id } },
+    update: {},
+    create: { companyId: company2.id, spotId: spot3.id },
+  });
+  console.log(`CompanySpot links created`);
+
   console.log("Seeding complete!");
 }
 
