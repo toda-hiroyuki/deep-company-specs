@@ -21,7 +21,7 @@ export default function CompanyLoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error?.message || "ログインに失敗しました");
       localStorage.setItem("company_token", data.token);
       router.replace("/company/dashboard");
