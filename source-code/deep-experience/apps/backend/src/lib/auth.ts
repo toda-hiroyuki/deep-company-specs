@@ -7,7 +7,7 @@ const TOKEN_EXPIRY = "7d";
 export interface JwtPayload {
   id: string;
   email: string;
-  role: "admin" | "guide" | "guest";
+  role: "admin" | "guide" | "guest" | "operator";
 }
 
 export function signToken(payload: JwtPayload): string {
@@ -30,7 +30,7 @@ export function getTokenFromRequest(req: NextRequest): string | null {
 
 export function requireAuth(
   req: NextRequest,
-  role: "admin" | "guide" | "guest"
+  role: "admin" | "guide" | "guest" | "operator"
 ): JwtPayload | NextResponse {
   const token = getTokenFromRequest(req);
   if (!token) {
