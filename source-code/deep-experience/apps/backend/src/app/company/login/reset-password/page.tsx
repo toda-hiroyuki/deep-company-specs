@@ -21,7 +21,7 @@ function ResetPasswordInner() {
   // トークンがある場合は有効性を確認
   useEffect(() => {
     if (!token) return;
-    fetch(`/api/v1/operator/auth/password-reset/verify?token=${token}`)
+    fetch(`/api/v1/company/auth/password-reset/verify?token=${token}`)
       .then((r) => r.json())
       .then((data) => {
         if (!data.valid) setStep("invalid");
@@ -35,7 +35,7 @@ function ResetPasswordInner() {
     setError("");
     setLoading(true);
     try {
-      await fetch("/api/v1/operator/auth/password-reset/request", {
+      await fetch("/api/v1/company/auth/password-reset/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -58,7 +58,7 @@ function ResetPasswordInner() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/v1/operator/auth/password-reset/complete", {
+      const res = await fetch("/api/v1/company/auth/password-reset/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
@@ -101,7 +101,7 @@ function ResetPasswordInner() {
               {loading ? "送信中..." : "リセットメールを送信"}
             </button>
             <p style={{ textAlign: "center", marginTop: 16, fontSize: 13 }}>
-              <Link href="/operator/login" style={{ color: "#60a5fa", textDecoration: "none" }}>
+              <Link href="/company/login" style={{ color: "#60a5fa", textDecoration: "none" }}>
                 ← ログインに戻る
               </Link>
             </p>
@@ -117,7 +117,7 @@ function ResetPasswordInner() {
               メールが届かない場合は迷惑メールフォルダをご確認ください。
             </p>
             <p style={{ marginTop: 24, fontSize: 13 }}>
-              <Link href="/operator/login" style={{ color: "#60a5fa", textDecoration: "none" }}>
+              <Link href="/company/login" style={{ color: "#60a5fa", textDecoration: "none" }}>
                 ← ログインに戻る
               </Link>
             </p>
@@ -175,7 +175,7 @@ function ResetPasswordInner() {
             <button
               className="btn btn-primary btn-lg"
               style={{ width: "100%" }}
-              onClick={() => router.replace("/operator/login")}
+              onClick={() => router.replace("/company/login")}
             >
               ログイン画面へ
             </button>

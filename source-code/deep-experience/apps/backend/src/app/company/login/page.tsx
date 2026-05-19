@@ -16,7 +16,7 @@ export default function OperatorLoginPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/v1/operator/auth/login", {
+      const res = await fetch("/api/v1/company/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -24,7 +24,7 @@ export default function OperatorLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message || "ログインに失敗しました");
       localStorage.setItem("operator_token", data.token);
-      router.replace("/operator/dashboard");
+      router.replace("/company/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "ログインに失敗しました");
     } finally {
@@ -75,7 +75,7 @@ export default function OperatorLoginPage() {
         </button>
         <p style={{ textAlign: "center", marginTop: 16, fontSize: 13 }}>
           <Link
-            href="/operator/login/reset-password"
+            href="/company/login/reset-password"
             style={{ color: "#60a5fa", textDecoration: "none" }}
           >
             パスワードをお忘れの方はこちら
