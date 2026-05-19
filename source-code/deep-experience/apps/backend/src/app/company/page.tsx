@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function OperatorIndexPage() {
+export default function CompanyIndexPage() {
   redirect("/company/dashboard");
 }

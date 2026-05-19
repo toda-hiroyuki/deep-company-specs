@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function OperatorLoginPage() {
+export default function CompanyLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +23,7 @@ export default function OperatorLoginPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message || "ログインに失敗しました");
-      localStorage.setItem("operator_token", data.token);
+      localStorage.setItem("company_token", data.token);
       router.replace("/company/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "ログインに失敗しました");

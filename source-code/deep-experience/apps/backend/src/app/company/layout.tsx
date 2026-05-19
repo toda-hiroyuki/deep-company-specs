@@ -69,7 +69,7 @@ const NAV_ITEMS = [
   },
 ];
 
-function OperatorLayoutInner({ children }: { children: React.ReactNode }) {
+function CompanyLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   if (pathname === "/company/login" || pathname.startsWith("/company/login/")) {
@@ -99,7 +99,7 @@ function OperatorLayoutInner({ children }: { children: React.ReactNode }) {
             className="btn btn-ghost btn-sm"
             style={{ width: "100%", color: "#9ca3af" }}
             onClick={() => {
-              localStorage.removeItem("operator_token");
+              localStorage.removeItem("company_token");
               window.location.href = "/company/login";
             }}
           >
@@ -112,6 +112,6 @@ function OperatorLayoutInner({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function OperatorLayout({ children }: { children: React.ReactNode }) {
-  return <OperatorLayoutInner>{children}</OperatorLayoutInner>;
+export default function CompanyLayout({ children }: { children: React.ReactNode }) {
+  return <CompanyLayoutInner>{children}</CompanyLayoutInner>;
 }

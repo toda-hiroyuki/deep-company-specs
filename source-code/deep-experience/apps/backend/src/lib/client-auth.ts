@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-error";
 
-export function useAuth(role: "admin" | "guide" | "operator") {
+export function useAuth(role: "admin" | "guide" | "company") {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

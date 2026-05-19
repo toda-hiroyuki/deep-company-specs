@@ -12,21 +12,21 @@ export async function POST(req: NextRequest) {
     return jsonOk({ message: "メールをご確認ください" });
   }
 
-  const operator = await prisma.operator.findUnique({ where: { email } });
+  const company = await prisma.company.findUnique({ where: { email } });
 
-  if (operator) {
+  if (company) {
     const token = randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1時間
 
-    await prisma.operator.update({
-      where: { id: operator.id },
+    await prisma.company.update({
+      where: { id: company.id },
       data: {
         passwordResetToken: token,
         passwordResetExpiresAt: expiresAt,
       },
     });
 
-    const resetUrl = `${SITE_URL}/operator/login/reset-password?token=${token}`;
+    const resetUrl = `${SITE_URL}/company/login/reset-password?token=${token}`;
     await sendMail(email, "【Deep Experience】パスワード再設定のご案内", passwordResetMailHtml(resetUrl));
   }
 

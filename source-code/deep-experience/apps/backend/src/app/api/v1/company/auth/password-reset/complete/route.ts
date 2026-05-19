@@ -13,19 +13,19 @@ export async function POST(req: NextRequest) {
     errors.push({ field: "password", message: "8文字以上で入力してください" });
   if (errors.length > 0) return validationError(errors);
 
-  const operator = await prisma.operator.findFirst({
+  const company = await prisma.company.findFirst({
     where: {
       passwordResetToken: token,
       passwordResetExpiresAt: { gt: new Date() },
     },
   });
 
-  if (!operator) {
+  if (!company) {
     return jsonError("INVALID_TOKEN", "リンクが無効または期限切れです", 400);
   }
 
-  await prisma.operator.update({
-    where: { id: operator.id },
+  await prisma.company.update({
+    where: { id: company.id },
     data: {
       passwordHash: hashSync(password, 12),
       passwordResetToken: null,

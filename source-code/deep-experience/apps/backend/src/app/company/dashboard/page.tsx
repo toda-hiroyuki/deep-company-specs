@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { useAuth } from "@/lib/client-auth";
 
-export default function OperatorDashboardPage() {
-  const { loading, authFetch } = useAuth("operator");
+export default function CompanyDashboardPage() {
+  const { loading, authFetch } = useAuth("company");
 
   useEffect(() => {
     // 認証確認のみ（将来のAPIコール用のサンプル）

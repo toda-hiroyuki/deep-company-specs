@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     return jsonError("VALIDATION_ERROR", "トークンが指定されていません", 400);
   }
 
-  const operator = await prisma.operator.findFirst({
+  const company = await prisma.company.findFirst({
     where: {
       passwordResetToken: token,
       passwordResetExpiresAt: { gt: new Date() },
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     select: { id: true },
   });
 
-  if (!operator) {
+  if (!company) {
     return jsonError("INVALID_TOKEN", "リンクが無効または期限切れです", 400);
   }
 

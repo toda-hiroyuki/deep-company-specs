@@ -15,16 +15,16 @@ export async function POST(req: NextRequest) {
     return jsonError("VALIDATION_ERROR", "メールアドレスとパスワードを入力してください", 400);
   }
 
-  const operator = await prisma.operator.findUnique({ where: { email } });
+  const company = await prisma.company.findUnique({ where: { email } });
 
   // 存在しない場合も同じエラーを返す（ユーザー存在の漏洩防止）
-  if (!operator) {
+  if (!company) {
     return jsonError("UNAUTHORIZED", "メールアドレスまたはパスワードが正しくありません", 401);
   }
 
   // アカウントロック確認
-  if (operator.lockedUntil && operator.lockedUntil > new Date()) {
-    const remainingMs = operator.lockedUntil.getTime() - Date.now();
+  if (company.lockedUntil && company.lockedUntil > new Date()) {
+    const remainingMs = company.lockedUntil.getTime() - Date.now();
     const remainingMin = Math.ceil(remainingMs / 60000);
     return jsonError(
       "ACCOUNT_LOCKED",
@@ -33,14 +33,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const passwordMatch = compareSync(password, operator.passwordHash);
+  const passwordMatch = compareSync(password, company.passwordHash);
 
   if (!passwordMatch) {
-    const newFailureCount = operator.loginFailureCount + 1;
+    const newFailureCount = company.loginFailureCount + 1;
     const shouldLock = newFailureCount >= MAX_FAILURES;
 
-    await prisma.operator.update({
-      where: { id: operator.id },
+    await prisma.company.update({
+      where: { id: company.id },
       data: {
         loginFailureCount: newFailureCount,
         lockedUntil: shouldLock
@@ -61,15 +61,15 @@ export async function POST(req: NextRequest) {
   }
 
   // ログイン成功: 失敗カウントをリセット
-  await prisma.operator.update({
-    where: { id: operator.id },
+  await prisma.company.update({
+    where: { id: company.id },
     data: { loginFailureCount: 0, lockedUntil: null },
   });
 
-  const token = signToken({ id: operator.id, email: operator.email, role: "operator" });
+  const token = signToken({ id: company.id, email: company.email, role: "company" });
 
   return jsonOk({
     token,
-    operator: { id: operator.id, name: operator.name, email: operator.email },
+    company: { id: company.id, name: company.name, email: company.email },
   });
 }

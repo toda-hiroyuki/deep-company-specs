@@ -67,7 +67,7 @@ model Admin {
   updatedAt    DateTime @updatedAt
 }
 
-model Operator {
+model Company {
   id                       String    @id @default(cuid())
   name                     String
   email                    String    @unique
@@ -85,19 +85,19 @@ model Operator {
   notifyOnCancelInApp      Boolean   @default(true)
   notifyOnPaymentEmail     Boolean   @default(true)
   notifyEmailLocale        String    @default("ja")
-  spots                    OperatorSpot[]
+  spots                    CompanySpot[]
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
 }
 
-model OperatorSpot {
-  operatorId String
+model CompanySpot {
+  companyId  String
   spotId     String
-  operator   Operator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  company    Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   spot       Spot     @relation(fields: [spotId], references: [id], onDelete: Cascade)
 
-  @@id([operatorId, spotId])
-  @@index([operatorId])
+  @@id([companyId, spotId])
+  @@index([companyId])
   @@index([spotId])
 }
 
@@ -121,7 +121,7 @@ model Spot {
 
   tours        Tour[]
   spotMedia    SpotMedia[]
-  operatorSpots OperatorSpot[]
+  companySpots  CompanySpot[]
 }
 
 // Tour = guided tour product (ガイドツアー / 商品)
