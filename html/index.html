@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Experience | 事業者管理画面</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ====================================================
+     LOGIN PAGE
+==================================================== -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">Deep Experience</span>
+      <span class="logo-sub">事業者管理画面</span>
+    </div>
+
+    <!-- ログインフォーム -->
+    <div id="login-form-section">
+      <h2>ログイン</h2>
+      <div class="form-group" style="margin-bottom:14px">
+        <label>メールアドレス</label>
+        <input type="email" id="login-email" value="demo@kotokugi.co.jp">
+      </div>
+      <div class="form-group" style="margin-bottom:20px">
+        <label>パスワード</label>
+        <input type="password" id="login-password" value="password">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">ログイン</button>
+      <a href="#" class="forgot-link" onclick="showResetForm();return false;">パスワードをお忘れの方はこちら</a>
+    </div>
+
+    <!-- パスワードリセット入力 -->
+    <div id="reset-form-section" class="hidden">
+      <h2>パスワードリセット</h2>
+      <p class="text-muted" style="margin-bottom:16px;font-size:13px">登録済みのメールアドレスを入力してください。</p>
+      <div class="form-group" style="margin-bottom:20px">
+        <label>メールアドレス</label>
+        <input type="email" placeholder="example@company.com">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="showResetSent()">送信する</button>
+      <a href="#" class="forgot-link" onclick="showLoginForm();return false;">← ログインに戻る</a>
+    </div>
+
+    <!-- 送信完了 -->
+    <div id="reset-sent-section" class="hidden" style="text-align:center">
+      <div class="success-icon">✓</div>
+      <h2 style="margin-bottom:8px">メールを送信しました</h2>
+      <p class="text-muted" style="font-size:13px;margin-bottom:20px">パスワードリセット用リンクをお送りしました。メールをご確認ください。</p>
+      <a href="#" class="forgot-link" onclick="showLoginForm();return false;">← ログインに戻る</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ====================================================
+     APP LAYOUT
+==================================================== -->
+<div id="app" class="hidden">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">✦</span>
+      <span>Deep Experience</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-screen="dashboard">
+        <span class="nav-icon">⊞</span>ダッシュボード
+      </a>
+      <a href="#" class="nav-item" data-screen="facility">
+        <span class="nav-icon">⌂</span>施設情報
+      </a>
+      <a href="#" class="nav-item" data-screen="activities">
+        <span class="nav-icon">◈</span>アクティビティ確認
+      </a>
+      <div class="nav-group-label">スケジュール管理</div>
+      <a href="#" class="nav-item nav-sub" data-screen="schedules">
+        <span class="nav-icon">◷</span>スケジュール
+      </a>
+      <a href="#" class="nav-item nav-sub" data-screen="closeouts">
+        <span class="nav-icon">✕</span>休業日・クローズ
+      </a>
+      <a href="#" class="nav-item" data-screen="bookings">
+        <span class="nav-icon">☰</span>予約管理
+        <span class="badge">3</span>
+      </a>
+      <a href="#" class="nav-item" data-screen="payments">
+        <span class="nav-icon">¥</span>支払い確認
+      </a>
+      <div class="nav-group-label">設定</div>
+      <a href="#" class="nav-item nav-sub" data-screen="settings-account">
+        <span class="nav-icon">⚙</span>アカウント
+      </a>
+      <a href="#" class="nav-item nav-sub" data-screen="settings-notifications">
+        <span class="nav-icon">🔔</span>通知設定
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">
+        <span>⏻</span>ログアウト
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div id="main-wrapper">
+    <header id="top-header">
+      <div class="header-left">
+        <span class="company-name">古都工芸株式会社</span>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" onclick="navigate('notifications')">
+          🔔<span class="notif-badge">2</span>
+        </button>
+        <div class="user-info">
+          <div class="user-avatar">山</div>
+          <span>山田 太郎</span>
+        </div>
+      </div>
+    </header>
+
+    <main id="content">
+
+      <!-- ============================
+           DASHBOARD
+      ============================= -->
+      <div id="screen-dashboard" class="screen active">
+        <div class="page-header">
+          <h1>ダッシュボード</h1>
+          <span class="page-date">2026年5月22日（金）</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">今月の予約数</div>
+            <div class="stat-value">24<span class="stat-unit">件</span></div>
+            <div class="stat-change positive">▲ 前月比 +4件</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">今月の確定売上</div>
+            <div class="stat-value">¥<span>84,000</span></div>
+            <div class="stat-change positive">▲ 前月比 +¥12,000</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-label">承認待ち予約</div>
+            <div class="stat-value">3<span class="stat-unit">件</span></div>
+            <div class="stat-action"><a href="#" onclick="navigate('bookings');return false;">今すぐ確認 →</a></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">今月の参加者数</div>
+            <div class="stat-value">67<span class="stat-unit">人</span></div>
+            <div class="stat-change positive">▲ 前月比 +11人</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header"><h3>直近7日の予約推移</h3></div>
+            <div class="chart-container">
+              <div id="bar-chart"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>今日のスケジュール</h3>
+              <span class="badge-today">5月22日</span>
+            </div>
+            <div class="today-schedule">
+              <div class="schedule-item">
+                <div class="schedule-time">10:00〜11:30</div>
+                <div class="schedule-info">
+                  <div class="schedule-name">京都本格陶芸体験コース</div>
+                  <div class="schedule-capacity">
+                    <span class="capacity-bar"><span style="width:70%"></span></span>
+                    <span>7 / 10名</span>
+                  </div>
+                </div>
+              </div>
+              <div class="schedule-item">
+                <div class="schedule-time">14:00〜16:00</div>
+                <div class="schedule-info">
+                  <div class="schedule-name">ろくろ体験プレミアムコース</div>
+                  <div class="schedule-capacity">
+                    <span class="capacity-bar"><span style="width:40%"></span></span>
+                    <span>2 / 5名</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>直近の予約</h3>
+            <a href="#" class="card-link" onclick="navigate('bookings');return false;">すべて見る →</a>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>受注番号</th><th>アクティビティ</th><th>開催日時</th>
+                <th>予約者名</th><th>人数</th><th>ステータス</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="order-no">DE-2026-0524</td>
+                <td>京都本格陶芸体験コース</td>
+                <td>2026/05/25 10:00</td>
+                <td>田中 花子</td>
+                <td>大人2名</td>
+                <td><span class="status-badge pending">承認待ち</span></td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0523</td>
+                <td>ろくろ体験プレミアムコース</td>
+                <td>2026/05/24 14:00</td>
+                <td>Smith, John</td>
+                <td>大人1名・子ども1名</td>
+                <td><span class="status-badge pending">承認待ち</span></td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0521</td>
+                <td>京都本格陶芸体験コース</td>
+                <td>2026/05/22 10:00</td>
+                <td>鈴木 一郎</td>
+                <td>大人3名</td>
+                <td><span class="status-badge confirmed">確定</span></td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0519</td>
+                <td>ろくろ体験プレミアムコース</td>
+                <td>2026/05/20 14:00</td>
+                <td>佐藤 美咲</td>
+                <td>大人2名・子ども2名</td>
+                <td><span class="status-badge confirmed">確定</span></td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0515</td>
+                <td>京都本格陶芸体験コース</td>
+                <td>2026/05/17 10:00</td>
+                <td>Wang, Li</td>
+                <td>大人4名</td>
+                <td><span class="status-badge completed">完了</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           FACILITY
+      ============================= -->
+      <div id="screen-facility" class="screen">
+        <div class="page-header"><h1>施設情報</h1></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>基本情報</h3>
+            <button class="btn btn-primary btn-sm" onclick="showToast('✓ 変更を保存しました。','success')">変更を保存</button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>施設名（日本語）</label>
+              <input type="text" value="京都陶芸工房 古都工芸">
+            </div>
+            <div class="form-group">
+              <label>施設名（English）</label>
+              <input type="text" value="Koto Kogei Kyoto Pottery Studio">
+            </div>
+            <div class="form-group full">
+              <label>住所</label>
+              <input type="text" value="京都府京都市東山区清水1丁目234番地">
+            </div>
+            <div class="form-group">
+              <label>電話番号</label>
+              <input type="text" value="075-123-4567">
+            </div>
+            <div class="form-group">
+              <label>連絡先メールアドレス</label>
+              <input type="email" value="info@kotokugi.co.jp">
+            </div>
+            <div class="form-group">
+              <label>営業時間</label>
+              <input type="text" value="9:00 〜 17:00">
+            </div>
+            <div class="form-group full">
+              <label>施設紹介文（日本語）</label>
+              <textarea rows="3">明治時代から続く伝統的な陶芸工房です。職人と共に本格的な京焼・清水焼を体験いただけます。</textarea>
+            </div>
+            <div class="form-group full">
+              <label>施設紹介文（English）</label>
+              <textarea rows="3">A traditional pottery studio with roots dating back to the Meiji era. Experience authentic Kyo-yaki and Kiyomizu-yaki alongside our skilled craftsmen.</textarea>
+            </div>
+          </div>
+          <div class="info-banner">
+            <span class="info-icon">ℹ</span>
+            施設画像は Deep Experience 運営者が管理します。変更の場合はお問い合わせください。
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           ACTIVITIES LIST
+      ============================= -->
+      <div id="screen-activities" class="screen">
+        <div class="page-header">
+          <h1>アクティビティ確認</h1>
+          <div class="readonly-badge">🔒 確認のみ（編集は運営者が行います）</div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="filter-row">
+              <button class="filter-btn active" onclick="filterActivities('all', this)">すべて (2)</button>
+              <button class="filter-btn" onclick="filterActivities('published', this)">公開中 (2)</button>
+              <button class="filter-btn" onclick="filterActivities('unpublished', this)">非公開 (0)</button>
+            </div>
+          </div>
+          <div class="activity-list">
+            <div class="activity-card" onclick="navigate('activity-detail')">
+              <div class="activity-thumb" style="background:linear-gradient(135deg,#C2A07A,#8B6914)">
+                <span style="font-size:32px">🏺</span>
+              </div>
+              <div class="activity-info">
+                <div class="activity-status"><span class="status-badge published">公開中</span></div>
+                <div class="activity-name">京都本格陶芸体験コース</div>
+                <div class="activity-name-en">Authentic Kyoto Pottery Experience</div>
+                <div class="activity-meta">
+                  <span>⏱ 90分</span>
+                  <span>👥 最大10名</span>
+                  <span>💴 大人 ¥3,500 / 子ども ¥2,000</span>
+                </div>
+              </div>
+              <div class="activity-arrow">›</div>
+            </div>
+            <div class="activity-card" onclick="navigate('activity-detail')">
+              <div class="activity-thumb" style="background:linear-gradient(135deg,#7C9AA0,#3D6B78)">
+                <span style="font-size:32px">🎨</span>
+              </div>
+              <div class="activity-info">
+                <div class="activity-status"><span class="status-badge published">公開中</span></div>
+                <div class="activity-name">ろくろ体験プレミアムコース</div>
+                <div class="activity-name-en">Premium Pottery Wheel Experience</div>
+                <div class="activity-meta">
+                  <span>⏱ 120分</span>
+                  <span>👥 最大5名</span>
+                  <span>💴 大人 ¥5,500 / 子ども ¥3,500</span>
+                </div>
+              </div>
+              <div class="activity-arrow">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           ACTIVITY DETAIL (view-only)
+      ============================= -->
+      <div id="screen-activity-detail" class="screen">
+        <div class="page-header">
+          <a href="#" class="back-link" onclick="navigate('activities');return false;">← アクティビティ一覧</a>
+          <div class="readonly-badge">🔒 確認のみ（編集は運営者が行います）</div>
+        </div>
+        <div class="card">
+          <div class="activity-detail-header">
+            <div class="activity-detail-thumb" style="background:linear-gradient(135deg,#C2A07A,#8B6914)">
+              <span style="font-size:48px">🏺</span>
+            </div>
+            <div>
+              <h2 style="font-size:20px;margin-bottom:4px">京都本格陶芸体験コース</h2>
+              <div class="text-muted" style="font-size:13px;margin-bottom:8px">Authentic Kyoto Pottery Experience</div>
+              <span class="status-badge published">公開中</span>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('detail-basic', this)">基本情報</button>
+            <button class="tab" onclick="switchTab('detail-pricing', this)">料金</button>
+            <button class="tab" onclick="switchTab('detail-images', this)">画像</button>
+          </div>
+
+          <div id="detail-basic" class="tab-content active">
+            <div class="detail-grid">
+              <div class="detail-row"><div class="detail-label">概要</div><div class="detail-value">明治時代から続く伝統工房で、職人指導のもと本格的な京焼・清水焼を体験。完成品は後日郵送でお届けします。</div></div>
+              <div class="detail-row"><div class="detail-label">所要時間</div><div class="detail-value">90分</div></div>
+              <div class="detail-row"><div class="detail-label">最小催行人数</div><div class="detail-value">1名</div></div>
+              <div class="detail-row"><div class="detail-label">最大催行人数</div><div class="detail-value">10名</div></div>
+              <div class="detail-row"><div class="detail-label">含まれるもの</div><div class="detail-value">材料費・指導料・完成品発送費（国内）・エプロン貸出</div></div>
+              <div class="detail-row"><div class="detail-label">持ち物・注意事項</div><div class="detail-value">汚れてもいい服装でお越しください。貴金属類はお外しください。</div></div>
+              <div class="detail-row"><div class="detail-label">キャンセルポリシー</div><div class="detail-value">開催24時間前まで無料キャンセル可能。以降はキャンセル料100%。</div></div>
+            </div>
+          </div>
+
+          <div id="detail-pricing" class="tab-content">
+            <div class="info-banner">
+              <span class="info-icon">ℹ</span>
+              料金は Deep Experience 運営者が設定します。変更の場合はお問い合わせください。
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr><th>参加者種別</th><th>対象年齢</th><th>1人あたりの利用料金（事業者取り分）</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>大人</td><td>13歳以上</td><td class="price-value">¥3,500</td></tr>
+                <tr><td>子ども</td><td>6〜12歳</td><td class="price-value">¥2,000</td></tr>
+                <tr><td>幼児</td><td>0〜5歳</td><td class="price-value">¥0（無料）</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="detail-images" class="tab-content">
+            <div class="info-banner">
+              <span class="info-icon">ℹ</span>
+              画像は Deep Experience 運営者が管理します。変更の場合はお問い合わせください。
+            </div>
+            <div class="image-grid">
+              <div class="image-item main">
+                <div class="image-placeholder" style="background:linear-gradient(135deg,#C2A07A,#8B6914);font-size:48px;height:140px">🏺</div>
+                <span class="image-label main-label">メイン</span>
+              </div>
+              <div class="image-item">
+                <div class="image-placeholder" style="background:linear-gradient(135deg,#D4B896,#A0784A);font-size:32px">🎨</div>
+              </div>
+              <div class="image-item">
+                <div class="image-placeholder" style="background:linear-gradient(135deg,#B8966E,#7A5C32);font-size:28px">🖶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           SCHEDULES
+      ============================= -->
+      <div id="screen-schedules" class="screen">
+        <div class="page-header">
+          <h1>スケジュール管理</h1>
+          <button class="btn btn-primary" onclick="showScheduleModal()">＋ ルール追加</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>登録済みスケジュールルール</h3></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>アクティビティ</th><th>種別</th><th>開催曜日・日付</th>
+                <th>時間</th><th>定員</th><th>適用期間</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>京都本格陶芸体験コース</td>
+                <td><span class="rule-type weekly">毎週</span></td>
+                <td>火・木・土・日</td>
+                <td>10:00 〜 11:30</td>
+                <td>最大10名</td>
+                <td>2026/04/01 〜</td>
+                <td>
+                  <button class="btn btn-ghost btn-sm" onclick="showScheduleModal()">編集</button>
+                  <button class="btn btn-danger btn-sm" onclick="showToast('スケジュールルールを削除しました。','danger')">削除</button>
+                </td>
+              </tr>
+              <tr>
+                <td>ろくろ体験プレミアムコース</td>
+                <td><span class="rule-type weekly">毎週</span></td>
+                <td>土・日</td>
+                <td>14:00 〜 16:00</td>
+                <td>最大5名</td>
+                <td>2026/04/01 〜</td>
+                <td>
+                  <button class="btn btn-ghost btn-sm" onclick="showScheduleModal()">編集</button>
+                  <button class="btn btn-danger btn-sm" onclick="showToast('スケジュールルールを削除しました。','danger')">削除</button>
+                </td>
+              </tr>
+              <tr>
+                <td>京都本格陶芸体験コース</td>
+                <td><span class="rule-type range">期間</span></td>
+                <td>毎日</td>
+                <td>09:00 〜 10:30</td>
+                <td>最大8名</td>
+                <td>2026/07/01 〜 2026/08/31</td>
+                <td>
+                  <button class="btn btn-ghost btn-sm" onclick="showScheduleModal()">編集</button>
+                  <button class="btn btn-danger btn-sm" onclick="showToast('スケジュールルールを削除しました。','danger')">削除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           CLOSE-OUTS
+      ============================= -->
+      <div id="screen-closeouts" class="screen">
+        <div class="page-header">
+          <h1>休業日・臨時クローズ</h1>
+          <button class="btn btn-primary" onclick="showCloseoutModal()">＋ クローズ追加</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>登録済みクローズ設定</h3></div>
+          <table class="data-table">
+            <thead>
+              <tr><th>対象アクティビティ</th><th>クローズ日</th><th>時間帯</th><th>理由メモ</th><th>操作</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>全アクティビティ</td>
+                <td>2026/06/14（日）</td>
+                <td>全日</td>
+                <td>設備メンテナンス</td>
+                <td><button class="btn btn-danger btn-sm" onclick="showToast('クローズ設定を削除しました。','danger')">削除</button></td>
+              </tr>
+              <tr>
+                <td>全アクティビティ</td>
+                <td>2026/08/13 〜 2026/08/15</td>
+                <td>全日</td>
+                <td>夏季休業</td>
+                <td><button class="btn btn-danger btn-sm" onclick="showToast('クローズ設定を削除しました。','danger')">削除</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           BOOKINGS LIST
+      ============================= -->
+      <div id="screen-bookings" class="screen">
+        <div class="page-header">
+          <h1>予約管理</h1>
+          <button class="btn btn-secondary" onclick="exportCSV()">⬇ CSV出力</button>
+        </div>
+
+        <div class="card search-card">
+          <div class="search-row">
+            <div class="form-group">
+              <label>日付範囲（開催日）</label>
+              <div class="date-range">
+                <input type="date" value="2026-05-01">
+                <span>〜</span>
+                <input type="date" value="2026-05-31">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>受注番号</label>
+              <input type="text" placeholder="DE-2026-0000">
+            </div>
+            <div class="form-group">
+              <label>予約者名</label>
+              <input type="text" placeholder="氏名で検索">
+            </div>
+            <div class="form-group">
+              <label>アクティビティ</label>
+              <select>
+                <option value="">すべて</option>
+                <option>京都本格陶芸体験コース</option>
+                <option>ろくろ体験プレミアムコース</option>
+              </select>
+            </div>
+          </div>
+          <div class="search-row">
+            <div class="form-group" style="grid-column:1/3">
+              <label>ステータス</label>
+              <div class="checkbox-group">
+                <label><input type="checkbox" checked> 承認待ち</label>
+                <label><input type="checkbox" checked> 確定</label>
+                <label><input type="checkbox"> キャンセル</label>
+                <label><input type="checkbox" checked> 完了</label>
+              </div>
+            </div>
+            <div class="search-actions" style="grid-column:4">
+              <button class="btn btn-primary">検索</button>
+              <button class="btn btn-ghost">クリア</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="result-count">全24件中 8件を表示</span>
+            <div class="pagination-info">1 / 3 ページ</div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>受注番号</th><th>アクティビティ</th><th>開催日時</th>
+                <th>予約者名</th><th>人数</th><th>合計金額</th>
+                <th>ステータス</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-tbody"></tbody>
+          </table>
+          <div class="pagination">
+            <button class="btn btn-ghost btn-sm" disabled>← 前へ</button>
+            <span class="page-nums">
+              <button class="page-num active">1</button>
+              <button class="page-num">2</button>
+              <button class="page-num">3</button>
+            </span>
+            <button class="btn btn-ghost btn-sm">次へ →</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           BOOKING DETAIL
+      ============================= -->
+      <div id="screen-booking-detail" class="screen">
+        <div class="page-header">
+          <a href="#" class="back-link" onclick="navigate('bookings');return false;">← 予約一覧</a>
+        </div>
+        <div class="booking-detail-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>予約基本情報</h3>
+              <span class="status-badge pending">承認待ち</span>
+            </div>
+            <div class="detail-grid" style="padding:0 20px">
+              <div class="detail-row"><div class="detail-label">受注番号</div><div class="detail-value mono">DE-2026-0524</div></div>
+              <div class="detail-row"><div class="detail-label">予約日時</div><div class="detail-value">2026年5月21日 15:23</div></div>
+              <div class="detail-row"><div class="detail-label">アクティビティ</div><div class="detail-value">京都本格陶芸体験コース</div></div>
+              <div class="detail-row"><div class="detail-label">開催日時</div><div class="detail-value">2026年5月25日（月）10:00 〜 11:30</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><h3>予約者情報</h3></div>
+            <div class="detail-grid" style="padding:0 20px">
+              <div class="detail-row"><div class="detail-label">氏名</div><div class="detail-value">田中 花子</div></div>
+              <div class="detail-row"><div class="detail-label">メールアドレス</div><div class="detail-value">hanako.tanaka@example.com</div></div>
+              <div class="detail-row"><div class="detail-label">電話番号</div><div class="detail-value">080-1234-5678</div></div>
+              <div class="detail-row"><div class="detail-label">特記事項</div><div class="detail-value text-muted">（なし）</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><h3>参加者・料金内訳</h3></div>
+            <table class="data-table">
+              <thead>
+                <tr><th>参加者種別</th><th>単価</th><th>人数</th><th>小計</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>大人</td><td>¥3,500</td><td>2名</td><td class="price-value">¥7,000</td></tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="total-label">合計（事業者受取）</td>
+                  <td class="total-value">¥7,000</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="card action-card">
+            <div class="card-header"><h3>予約への対応</h3></div>
+            <p class="action-description">この予約を承認するか拒否するかをお選びください。承認後は取り消しできません。</p>
+            <div class="action-buttons">
+              <button class="btn btn-success btn-lg" onclick="showApproveModal()">✓ 承認（OK）</button>
+              <button class="btn btn-danger btn-lg" onclick="showRejectModal()">✕ 拒否（NG）</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           PAYMENTS
+      ============================= -->
+      <div id="screen-payments" class="screen">
+        <div class="page-header"><h1>支払い確認</h1></div>
+
+        <div class="month-selector">
+          <button class="btn btn-ghost" onclick="changePaymentMonth(-1)">← 前月</button>
+          <span class="current-month" id="payment-month">2026年5月</span>
+          <button class="btn btn-ghost" onclick="changePaymentMonth(1)">次月 →</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">確定済み予約件数</div>
+            <div class="stat-value">15<span class="stat-unit">件</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">事業者受取額（合計）</div>
+            <div class="stat-value">¥<span>52,500</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">支払いステータス</div>
+            <div class="stat-value" style="margin-top:6px"><span class="status-badge unpaid">未払い</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">支払い予定日</div>
+            <div class="stat-value" style="font-size:22px">6月25日</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>対象予約一覧（2026年5月 確定済み）</h3></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>受注番号</th><th>開催日</th><th>アクティビティ</th>
+                <th>参加者内訳</th><th>利用料金内訳</th><th>小計</th><th>確定日</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="order-no">DE-2026-0501</td><td>5/3</td><td>京都本格陶芸体験コース</td>
+                <td>大人2名・子ども1名</td><td>¥3,500×2 + ¥2,000×1</td>
+                <td class="price-value">¥9,000</td><td>5/3</td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0503</td><td>5/4</td><td>ろくろ体験プレミアムコース</td>
+                <td>大人1名</td><td>¥5,500×1</td>
+                <td class="price-value">¥5,500</td><td>5/4</td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0507</td><td>5/6</td><td>京都本格陶芸体験コース</td>
+                <td>大人4名</td><td>¥3,500×4</td>
+                <td class="price-value">¥14,000</td><td>5/6</td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0510</td><td>5/10</td><td>ろくろ体験プレミアムコース</td>
+                <td>大人2名・子ども2名</td><td>¥5,500×2 + ¥3,500×2</td>
+                <td class="price-value">¥18,000</td><td>5/10</td>
+              </tr>
+              <tr>
+                <td class="order-no">DE-2026-0515</td><td>5/15</td><td>京都本格陶芸体験コース</td>
+                <td>大人2名</td><td>¥3,500×2</td>
+                <td class="price-value">¥7,000</td><td>5/15</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5" class="total-label">合計（5件表示中）</td>
+                <td class="total-value">¥53,500</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           NOTIFICATIONS
+      ============================= -->
+      <div id="screen-notifications" class="screen">
+        <div class="page-header">
+          <h1>通知一覧</h1>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('すべて既読にしました。')">すべて既読にする</button>
+        </div>
+        <div class="card">
+          <div class="notification-list">
+            <div class="notification-item unread">
+              <div class="notif-icon booking">📋</div>
+              <div class="notif-body">
+                <div class="notif-title">新規予約が入りました</div>
+                <div class="notif-desc">【京都本格陶芸体験コース】5月25日 10:00 / 田中 花子 様（大人2名）</div>
+                <div class="notif-time">1時間前</div>
+              </div>
+              <div class="notif-unread-dot"></div>
+            </div>
+            <div class="notification-item unread">
+              <div class="notif-icon booking">📋</div>
+              <div class="notif-body">
+                <div class="notif-title">新規予約が入りました</div>
+                <div class="notif-desc">【ろくろ体験プレミアムコース】5月24日 14:00 / Smith, John 様（大人1名・子ども1名）</div>
+                <div class="notif-time">3時間前</div>
+              </div>
+              <div class="notif-unread-dot"></div>
+            </div>
+            <div class="notification-item">
+              <div class="notif-icon cancel">❌</div>
+              <div class="notif-body">
+                <div class="notif-title">予約がキャンセルされました</div>
+                <div class="notif-desc">【京都本格陶芸体験コース】5月22日 10:00 / 高橋 様（大人2名）</div>
+                <div class="notif-time">昨日</div>
+              </div>
+            </div>
+            <div class="notification-item">
+              <div class="notif-icon payment">💴</div>
+              <div class="notif-body">
+                <div class="notif-title">支払いが完了しました</div>
+                <div class="notif-desc">2026年4月分 ¥89,000 の振り込みが完了しました。</div>
+                <div class="notif-time">2026/05/25</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           SETTINGS: ACCOUNT
+      ============================= -->
+      <div id="screen-settings-account" class="screen">
+        <div class="page-header"><h1>アカウント設定</h1></div>
+        <div class="card" style="max-width:560px">
+          <div class="card-header">
+            <h3>基本情報</h3>
+            <button class="btn btn-primary btn-sm" onclick="showToast('✓ 変更を保存しました。','success')">保存</button>
+          </div>
+          <div class="form-grid single">
+            <div class="form-group">
+              <label>担当者名</label>
+              <input type="text" value="山田 太郎">
+            </div>
+            <div class="form-group">
+              <label>メールアドレス</label>
+              <input type="email" value="yamada@kotokugi.co.jp">
+              <div class="field-note">変更時は確認メールを現在・新アドレス両方へ送信します</div>
+            </div>
+            <div class="form-group">
+              <label>管理画面の表示言語</label>
+              <select><option selected>日本語</option><option>English</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="max-width:560px;margin-top:16px">
+          <div class="card-header">
+            <h3>パスワード変更</h3>
+            <button class="btn btn-primary btn-sm" onclick="showToast('✓ パスワードを変更しました。','success')">変更</button>
+          </div>
+          <div class="form-grid single">
+            <div class="form-group">
+              <label>現在のパスワード</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label>新しいパスワード</label>
+              <input type="password" placeholder="8文字以上">
+            </div>
+            <div class="form-group">
+              <label>新しいパスワード（確認）</label>
+              <input type="password" placeholder="8文字以上">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================
+           SETTINGS: NOTIFICATIONS
+      ============================= -->
+      <div id="screen-settings-notifications" class="screen">
+        <div class="page-header"><h1>通知設定</h1></div>
+        <div class="card" style="max-width:560px">
+          <div class="card-header">
+            <h3>通知のオン/オフ</h3>
+            <button class="btn btn-primary btn-sm" onclick="showToast('✓ 通知設定を保存しました。','success')">保存</button>
+          </div>
+          <div class="notification-settings">
+            <div class="notif-setting-item">
+              <div class="notif-setting-info">
+                <div class="notif-setting-title">新規予約通知（メール）</div>
+                <div class="notif-setting-desc">新しい予約が入った際にメールで通知します</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="notif-setting-item">
+              <div class="notif-setting-info">
+                <div class="notif-setting-title">新規予約通知（画面内）</div>
+                <div class="notif-setting-desc">新しい予約が入った際に画面内バッジで通知します</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="notif-setting-item">
+              <div class="notif-setting-info">
+                <div class="notif-setting-title">キャンセル通知（メール）</div>
+                <div class="notif-setting-desc">予約がキャンセルされた際にメールで通知します</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="notif-setting-item">
+              <div class="notif-setting-info">
+                <div class="notif-setting-title">キャンセル通知（画面内）</div>
+                <div class="notif-setting-desc">予約がキャンセルされた際に画面内で通知します</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="notif-setting-item">
+              <div class="notif-setting-info">
+                <div class="notif-setting-title">支払い完了通知（メール）</div>
+                <div class="notif-setting-desc">支払いが完了した際にメールで通知します</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="notif-setting-item">
+              <div class="notif-setting-info">
+                <div class="notif-setting-title">メール通知の言語</div>
+              </div>
+              <select style="width:120px"><option selected>日本語</option><option>English</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div><!-- /#app -->
+
+
+<!-- ====================================================
+     MODALS
+==================================================== -->
+
+<!-- スケジュールルール追加 -->
+<div id="modal-schedule" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>スケジュールルール追加</h3>
+      <button class="modal-close" onclick="closeModal('modal-schedule')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid single">
+        <div class="form-group">
+          <label>対象アクティビティ <span class="required">*</span></label>
+          <select>
+            <option value="">選択してください</option>
+            <option>京都本格陶芸体験コース</option>
+            <option>ろくろ体験プレミアムコース</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ルール種別 <span class="required">*</span></label>
+          <select id="rule-type-select" onchange="updateRuleTypeUI()">
+            <option value="weekly">毎週（WEEKLY）</option>
+            <option value="range">期間指定（RANGE）</option>
+            <option value="single">単発（SINGLE）</option>
+          </select>
+        </div>
+        <div id="rule-weekly-days" class="form-group">
+          <label>開催曜日 <span class="required">*</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox"> 月</label>
+            <label><input type="checkbox"> 火</label>
+            <label><input type="checkbox"> 水</label>
+            <label><input type="checkbox" checked> 木</label>
+            <label><input type="checkbox" checked> 金</label>
+            <label><input type="checkbox" checked> 土</label>
+            <label><input type="checkbox" checked> 日</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>開始時刻 <span class="required">*</span></label>
+            <input type="time" value="10:00">
+          </div>
+          <div class="form-group">
+            <label>終了時刻 <span class="required">*</span></label>
+            <input type="time" value="11:30">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>最小催行人数 <span class="required">*</span></label>
+            <input type="number" value="1" min="1">
+          </div>
+          <div class="form-group">
+            <label>最大定員 <span class="required">*</span></label>
+            <input type="number" value="10" min="1">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>適用開始日 <span class="required">*</span></label>
+            <input type="date" value="2026-06-01">
+          </div>
+          <div class="form-group">
+            <label>適用終了日（任意・空欄で無期限）</label>
+            <input type="date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>予約締切（開催〇時間前）</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" value="24" min="0" style="width:80px">
+            <span style="color:var(--text-muted)">時間前</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-schedule')">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveSchedule()">プレビューして保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 休業日・クローズ追加 -->
+<div id="modal-closeout" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>休業日・臨時クローズ追加</h3>
+      <button class="modal-close" onclick="closeModal('modal-closeout')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid single">
+        <div class="form-group">
+          <label>対象アクティビティ</label>
+          <select>
+            <option value="all">全アクティビティ</option>
+            <option>京都本格陶芸体験コース</option>
+            <option>ろくろ体験プレミアムコース</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>開始日 <span class="required">*</span></label>
+            <input type="date">
+          </div>
+          <div class="form-group">
+            <label>終了日（単日の場合は空欄）</label>
+            <input type="date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>クローズ時間帯</label>
+          <select><option>全日</option><option>時間帯指定</option></select>
+        </div>
+        <div class="form-group">
+          <label>理由メモ（内部管理用）</label>
+          <input type="text" placeholder="例: 設備メンテナンス">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-closeout')">キャンセル</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-closeout');showToast('✓ クローズ設定を追加しました。','success')">追加する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 承認確認 -->
+<div id="modal-approve" class="modal-overlay hidden">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>予約を承認しますか？</h3>
+      <button class="modal-close" onclick="closeModal('modal-approve')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>受注番号 <strong>DE-2026-0524</strong> の予約を承認します。</p>
+      <p class="text-muted" style="margin-top:8px;font-size:13px">承認後は取り消しできません。予約者へ確定メールが自動送信されます。</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-approve')">キャンセル</button>
+      <button class="btn btn-success" onclick="doApprove()">承認する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 拒否確認 -->
+<div id="modal-reject" class="modal-overlay hidden">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>予約を拒否しますか？</h3>
+      <button class="modal-close" onclick="closeModal('modal-reject')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>受注番号 <strong>DE-2026-0524</strong> の予約を拒否します。</p>
+      <div class="form-group" style="margin-top:14px">
+        <label>拒否理由（任意）</label>
+        <div style="display:flex;flex-direction:column;gap:8px;margin:8px 0">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="radio" name="reject-reason"> 満員のため</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="radio" name="reject-reason"> 開催中止のため</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="radio" name="reject-reason" checked> その他</label>
+        </div>
+        <textarea rows="2" placeholder="その他の理由を入力（任意）"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reject')">キャンセル</button>
+      <button class="btn btn-danger" onclick="doReject()">拒否する</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
