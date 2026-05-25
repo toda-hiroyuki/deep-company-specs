@@ -87,17 +87,16 @@
       </a>
       <a href="#" class="nav-item" data-screen="bookings">
         <span class="nav-icon">☰</span>予約管理
-        <span class="badge">3</span>
+        <span class="badge" id="nav-unreviewed-badge">3</span>
       </a>
       <a href="#" class="nav-item" data-screen="payments">
         <span class="nav-icon">¥</span>支払い確認
       </a>
-      <div class="nav-group-label">設定</div>
-      <a href="#" class="nav-item nav-sub" data-screen="settings-account">
-        <span class="nav-icon">⚙</span>アカウント
+      <a href="#" class="nav-item" data-screen="notifications">
+        <span class="nav-icon">🔔</span>通知一覧
       </a>
-      <a href="#" class="nav-item nav-sub" data-screen="settings-notifications">
-        <span class="nav-icon">🔔</span>通知設定
+      <a href="#" class="nav-item" data-screen="settings-account">
+        <span class="nav-icon">⚙</span>アカウント設定
       </a>
     </nav>
     <div class="sidebar-footer">
@@ -132,7 +131,7 @@
       <div id="screen-dashboard" class="screen active">
         <div class="page-header">
           <h1>ダッシュボード</h1>
-          <span class="page-date">2026年5月22日（金）</span>
+          <span class="page-date">2026年5月25日（月）</span>
         </div>
 
         <div class="stats-grid">
@@ -147,7 +146,7 @@
             <div class="stat-change positive">▲ 前月比 +¥12,000</div>
           </div>
           <div class="stat-card warning">
-            <div class="stat-label">承認待ち予約</div>
+            <div class="stat-label">未確認予約</div>
             <div class="stat-value">3<span class="stat-unit">件</span></div>
             <div class="stat-action"><a href="#" onclick="navigate('bookings');return false;">今すぐ確認 →</a></div>
           </div>
@@ -168,7 +167,7 @@
           <div class="card">
             <div class="card-header">
               <h3>今日のスケジュール</h3>
-              <span class="badge-today">5月22日</span>
+              <span class="badge-today">5月25日</span>
             </div>
             <div class="today-schedule">
               <div class="schedule-item">
@@ -204,7 +203,7 @@
             <thead>
               <tr>
                 <th>受注番号</th><th>アクティビティ</th><th>開催日時</th>
-                <th>予約者名</th><th>人数</th><th>ステータス</th>
+                <th>予約者名</th><th>人数</th><th>予約ステータス</th><th>確認ステータス</th>
               </tr>
             </thead>
             <tbody>
@@ -214,7 +213,8 @@
                 <td>2026/05/25 10:00</td>
                 <td>田中 花子</td>
                 <td>大人2名</td>
-                <td><span class="status-badge pending">承認待ち</span></td>
+                <td><span class="status-badge confirmed">確定</span></td>
+                <td><span class="status-badge unreviewed">未確認</span></td>
               </tr>
               <tr>
                 <td class="order-no">DE-2026-0523</td>
@@ -222,23 +222,26 @@
                 <td>2026/05/24 14:00</td>
                 <td>Smith, John</td>
                 <td>大人1名・子ども1名</td>
-                <td><span class="status-badge pending">承認待ち</span></td>
+                <td><span class="status-badge confirmed">確定</span></td>
+                <td><span class="status-badge unreviewed">未確認</span></td>
               </tr>
               <tr>
-                <td class="order-no">DE-2026-0521</td>
+                <td class="order-no">DE-2026-0522</td>
                 <td>京都本格陶芸体験コース</td>
                 <td>2026/05/22 10:00</td>
                 <td>鈴木 一郎</td>
                 <td>大人3名</td>
                 <td><span class="status-badge confirmed">確定</span></td>
+                <td><span class="status-badge unreviewed">未確認</span></td>
               </tr>
               <tr>
-                <td class="order-no">DE-2026-0519</td>
+                <td class="order-no">DE-2026-0521</td>
                 <td>ろくろ体験プレミアムコース</td>
-                <td>2026/05/20 14:00</td>
+                <td>2026/05/21 14:00</td>
                 <td>佐藤 美咲</td>
                 <td>大人2名・子ども2名</td>
                 <td><span class="status-badge confirmed">確定</span></td>
+                <td><span class="status-badge reviewed">確認済み</span></td>
               </tr>
               <tr>
                 <td class="order-no">DE-2026-0515</td>
@@ -247,6 +250,7 @@
                 <td>Wang, Li</td>
                 <td>大人4名</td>
                 <td><span class="status-badge completed">完了</span></td>
+                <td><span class="status-badge reviewed">確認済み</span></td>
               </tr>
             </tbody>
           </table>
@@ -569,13 +573,20 @@
             </div>
           </div>
           <div class="search-row">
-            <div class="form-group" style="grid-column:1/3">
-              <label>ステータス</label>
+            <div class="form-group" style="grid-column:1/2">
+              <label>予約ステータス</label>
               <div class="checkbox-group">
-                <label><input type="checkbox" checked> 承認待ち</label>
                 <label><input type="checkbox" checked> 確定</label>
-                <label><input type="checkbox"> キャンセル</label>
                 <label><input type="checkbox" checked> 完了</label>
+                <label><input type="checkbox"> キャンセル</label>
+                <label><input type="checkbox" checked> 進行中</label>
+              </div>
+            </div>
+            <div class="form-group" style="grid-column:2/3">
+              <label>確認ステータス</label>
+              <div class="checkbox-group">
+                <label><input type="checkbox" checked> 未確認</label>
+                <label><input type="checkbox" checked> 確認済み</label>
               </div>
             </div>
             <div class="search-actions" style="grid-column:4">
@@ -595,7 +606,7 @@
               <tr>
                 <th>受注番号</th><th>アクティビティ</th><th>開催日時</th>
                 <th>予約者名</th><th>人数</th><th>合計金額</th>
-                <th>ステータス</th><th>操作</th>
+                <th>予約ステータス</th><th>確認ステータス</th><th>操作</th>
               </tr>
             </thead>
             <tbody id="bookings-tbody"></tbody>
@@ -624,7 +635,10 @@
           <div class="card">
             <div class="card-header">
               <h3>予約基本情報</h3>
-              <span class="status-badge pending">承認待ち</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="status-badge confirmed">確定</span>
+                <span class="status-badge unreviewed">未確認</span>
+              </div>
             </div>
             <div class="detail-grid" style="padding:0 20px">
               <div class="detail-row"><div class="detail-label">受注番号</div><div class="detail-value mono">DE-2026-0524</div></div>
@@ -662,12 +676,11 @@
             </table>
           </div>
 
-          <div class="card action-card">
-            <div class="card-header"><h3>予約への対応</h3></div>
-            <p class="action-description">この予約を承認するか拒否するかをお選びください。承認後は取り消しできません。</p>
+          <div class="card action-card" id="review-action-card">
+            <div class="card-header"><h3>予約確認ステータス</h3></div>
+            <p class="action-description">予約内容を確認したら「確認済みにする」ボタンを押してください。</p>
             <div class="action-buttons">
-              <button class="btn btn-success btn-lg" onclick="showApproveModal()">✓ 承認（OK）</button>
-              <button class="btn btn-danger btn-lg" onclick="showRejectModal()">✕ 拒否（NG）</button>
+              <button class="btn btn-primary btn-lg" onclick="showReviewModal()">✓ 確認済みにする</button>
             </div>
           </div>
         </div>
@@ -850,63 +863,6 @@
         </div>
       </div>
 
-
-      <!-- ============================
-           SETTINGS: NOTIFICATIONS
-      ============================= -->
-      <div id="screen-settings-notifications" class="screen">
-        <div class="page-header"><h1>通知設定</h1></div>
-        <div class="card" style="max-width:560px">
-          <div class="card-header">
-            <h3>通知のオン/オフ</h3>
-            <button class="btn btn-primary btn-sm" onclick="showToast('✓ 通知設定を保存しました。','success')">保存</button>
-          </div>
-          <div class="notification-settings">
-            <div class="notif-setting-item">
-              <div class="notif-setting-info">
-                <div class="notif-setting-title">新規予約通知（メール）</div>
-                <div class="notif-setting-desc">新しい予約が入った際にメールで通知します</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="notif-setting-item">
-              <div class="notif-setting-info">
-                <div class="notif-setting-title">新規予約通知（画面内）</div>
-                <div class="notif-setting-desc">新しい予約が入った際に画面内バッジで通知します</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="notif-setting-item">
-              <div class="notif-setting-info">
-                <div class="notif-setting-title">キャンセル通知（メール）</div>
-                <div class="notif-setting-desc">予約がキャンセルされた際にメールで通知します</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="notif-setting-item">
-              <div class="notif-setting-info">
-                <div class="notif-setting-title">キャンセル通知（画面内）</div>
-                <div class="notif-setting-desc">予約がキャンセルされた際に画面内で通知します</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="notif-setting-item">
-              <div class="notif-setting-info">
-                <div class="notif-setting-title">支払い完了通知（メール）</div>
-                <div class="notif-setting-desc">支払いが完了した際にメールで通知します</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="notif-setting-item">
-              <div class="notif-setting-info">
-                <div class="notif-setting-title">メール通知の言語</div>
-              </div>
-              <select style="width:120px"><option selected>日本語</option><option>English</option></select>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </main>
   </div>
 </div><!-- /#app -->
@@ -1043,46 +999,20 @@
   </div>
 </div>
 
-<!-- 承認確認 -->
-<div id="modal-approve" class="modal-overlay hidden">
+<!-- 確認済みにする確認モーダル -->
+<div id="modal-review" class="modal-overlay hidden">
   <div class="modal modal-sm">
     <div class="modal-header">
-      <h3>予約を承認しますか？</h3>
-      <button class="modal-close" onclick="closeModal('modal-approve')">✕</button>
+      <h3>確認済みにしますか？</h3>
+      <button class="modal-close" onclick="closeModal('modal-review')">✕</button>
     </div>
     <div class="modal-body">
-      <p>受注番号 <strong>DE-2026-0524</strong> の予約を承認します。</p>
-      <p class="text-muted" style="margin-top:8px;font-size:13px">承認後は取り消しできません。予約者へ確定メールが自動送信されます。</p>
+      <p>受注番号 <strong>DE-2026-0524</strong> の予約確認ステータスを「確認済み」に更新します。</p>
+      <p class="text-muted" style="margin-top:8px;font-size:13px">「確認済み」にした後、「未確認」に戻すことはできません。</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-approve')">キャンセル</button>
-      <button class="btn btn-success" onclick="doApprove()">承認する</button>
-    </div>
-  </div>
-</div>
-
-<!-- 拒否確認 -->
-<div id="modal-reject" class="modal-overlay hidden">
-  <div class="modal modal-sm">
-    <div class="modal-header">
-      <h3>予約を拒否しますか？</h3>
-      <button class="modal-close" onclick="closeModal('modal-reject')">✕</button>
-    </div>
-    <div class="modal-body">
-      <p>受注番号 <strong>DE-2026-0524</strong> の予約を拒否します。</p>
-      <div class="form-group" style="margin-top:14px">
-        <label>拒否理由（任意）</label>
-        <div style="display:flex;flex-direction:column;gap:8px;margin:8px 0">
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="radio" name="reject-reason"> 満員のため</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="radio" name="reject-reason"> 開催中止のため</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="radio" name="reject-reason" checked> その他</label>
-        </div>
-        <textarea rows="2" placeholder="その他の理由を入力（任意）"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-reject')">キャンセル</button>
-      <button class="btn btn-danger" onclick="doReject()">拒否する</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-review')">キャンセル</button>
+      <button class="btn btn-primary" onclick="doMarkReviewed()">確認済みにする</button>
     </div>
   </div>
 </div>
