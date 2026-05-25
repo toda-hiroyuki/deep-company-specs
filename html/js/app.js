@@ -4,26 +4,31 @@
    MOCK DATA
 =================================================== */
 const BOOKINGS = [
-  { id: 'DE-2026-0524', activity: '京都本格陶芸体験コース', scheduleDate: '2026/05/25 10:00', bookedAt: '2026/05/21 15:23', traveler: '田中 花子',  pax: '大人2名',           total: 7000,  status: 'pending'   },
-  { id: 'DE-2026-0523', activity: 'ろくろ体験プレミアムコース',   scheduleDate: '2026/05/24 14:00', bookedAt: '2026/05/21 11:05', traveler: 'Smith, John', pax: '大人1名・子ども1名', total: 9000,  status: 'pending'   },
-  { id: 'DE-2026-0522', activity: '京都本格陶芸体験コース', scheduleDate: '2026/05/22 10:00', bookedAt: '2026/05/20 09:40', traveler: '鈴木 一郎',  pax: '大人3名',           total: 10500, status: 'pending'   },
-  { id: 'DE-2026-0521', activity: 'ろくろ体験プレミアムコース',   scheduleDate: '2026/05/21 14:00', bookedAt: '2026/05/19 18:22', traveler: '佐藤 美咲',  pax: '大人2名・子ども2名', total: 18000, status: 'confirmed' },
-  { id: 'DE-2026-0519', activity: '京都本格陶芸体験コース', scheduleDate: '2026/05/18 10:00', bookedAt: '2026/05/16 14:10', traveler: 'Wang, Li',   pax: '大人4名',           total: 14000, status: 'confirmed' },
-  { id: 'DE-2026-0515', activity: 'ろくろ体験プレミアムコース',   scheduleDate: '2026/05/15 14:00', bookedAt: '2026/05/13 10:00', traveler: '高橋 誠',    pax: '大人2名',           total: 11000, status: 'completed' },
-  { id: 'DE-2026-0510', activity: '京都本格陶芸体験コース', scheduleDate: '2026/05/10 10:00', bookedAt: '2026/05/08 08:30', traveler: '山本 葵',    pax: '大人2名・子ども1名', total: 9000,  status: 'completed' },
-  { id: 'DE-2026-0508', activity: '京都本格陶芸体験コース', scheduleDate: '2026/05/08 10:00', bookedAt: '2026/05/05 20:15', traveler: 'Lee, Jisu',  pax: '大人1名',           total: 3500,  status: 'cancelled' },
+  { id: 'DE-2026-0524', activity: '京都本格陶芸体験コース',   scheduleDate: '2026/05/25 10:00', bookedAt: '2026/05/21 15:23', traveler: '田中 花子',  pax: '大人2名',            total: 7000,  status: 'confirmed', reviewStatus: 'unreviewed' },
+  { id: 'DE-2026-0523', activity: 'ろくろ体験プレミアムコース', scheduleDate: '2026/05/24 14:00', bookedAt: '2026/05/21 11:05', traveler: 'Smith, John', pax: '大人1名・子ども1名',  total: 9000,  status: 'confirmed', reviewStatus: 'unreviewed' },
+  { id: 'DE-2026-0522', activity: '京都本格陶芸体験コース',   scheduleDate: '2026/05/22 10:00', bookedAt: '2026/05/20 09:40', traveler: '鈴木 一郎',  pax: '大人3名',            total: 10500, status: 'confirmed', reviewStatus: 'unreviewed' },
+  { id: 'DE-2026-0521', activity: 'ろくろ体験プレミアムコース', scheduleDate: '2026/05/21 14:00', bookedAt: '2026/05/19 18:22', traveler: '佐藤 美咲',  pax: '大人2名・子ども2名', total: 18000, status: 'confirmed', reviewStatus: 'reviewed'   },
+  { id: 'DE-2026-0519', activity: '京都本格陶芸体験コース',   scheduleDate: '2026/05/18 10:00', bookedAt: '2026/05/16 14:10', traveler: 'Wang, Li',   pax: '大人4名',            total: 14000, status: 'confirmed', reviewStatus: 'reviewed'   },
+  { id: 'DE-2026-0515', activity: 'ろくろ体験プレミアムコース', scheduleDate: '2026/05/15 14:00', bookedAt: '2026/05/13 10:00', traveler: '高橋 誠',    pax: '大人2名',            total: 11000, status: 'completed', reviewStatus: 'reviewed'   },
+  { id: 'DE-2026-0510', activity: '京都本格陶芸体験コース',   scheduleDate: '2026/05/10 10:00', bookedAt: '2026/05/08 08:30', traveler: '山本 葵',    pax: '大人2名・子ども1名', total: 9000,  status: 'completed', reviewStatus: 'reviewed'   },
+  { id: 'DE-2026-0508', activity: '京都本格陶芸体験コース',   scheduleDate: '2026/05/08 10:00', bookedAt: '2026/05/05 20:15', traveler: 'Lee, Jisu',  pax: '大人1名',            total: 3500,  status: 'cancelled', reviewStatus: 'reviewed'   },
 ];
 
 const CHART_DATA = {
-  labels: ['5/16', '5/17', '5/18', '5/19', '5/20', '5/21', '5/22'],
-  values: [3,       5,      2,      4,      6,      3,      4     ],
+  labels: ['5/19', '5/20', '5/21', '5/22', '5/23', '5/24', '5/25'],
+  values: [3,       5,      2,      4,       6,      3,      4     ],
 };
 
 const STATUS_LABELS = {
-  pending:   { label: '承認待ち', cls: 'pending'   },
-  confirmed: { label: '確定',     cls: 'confirmed' },
-  completed: { label: '完了',     cls: 'completed' },
-  cancelled: { label: 'キャンセル', cls: 'cancelled' },
+  confirmed:   { label: '確定',     cls: 'confirmed'   },
+  completed:   { label: '完了',     cls: 'completed'   },
+  cancelled:   { label: 'キャンセル', cls: 'cancelled' },
+  in_progress: { label: '進行中',   cls: 'in-progress' },
+};
+
+const REVIEW_LABELS = {
+  unreviewed: { label: '未確認',  cls: 'unreviewed' },
+  reviewed:   { label: '確認済み', cls: 'reviewed'  },
 };
 
 let paymentMonthOffset = 0;
@@ -117,12 +122,8 @@ function showCloseoutModal() {
   document.getElementById('modal-closeout').classList.remove('hidden');
 }
 
-function showApproveModal() {
-  document.getElementById('modal-approve').classList.remove('hidden');
-}
-
-function showRejectModal() {
-  document.getElementById('modal-reject').classList.remove('hidden');
+function showReviewModal() {
+  document.getElementById('modal-review').classList.remove('hidden');
 }
 
 function closeModal(id) {
@@ -137,18 +138,43 @@ document.addEventListener('click', e => {
 
 
 /* ===================================================
-   APPROVE / REJECT
+   MARK AS REVIEWED
 =================================================== */
-function doApprove() {
-  closeModal('modal-approve');
-  showToast('✓ 予約を承認しました。予約者へ確定メールを送信しました。', 'success');
-  setTimeout(() => navigate('bookings'), 800);
+function doMarkReviewed() {
+  closeModal('modal-review');
+
+  // Update mock data
+  const booking = BOOKINGS.find(b => b.id === 'DE-2026-0524');
+  if (booking) booking.reviewStatus = 'reviewed';
+
+  // Hide action card on detail screen
+  const card = document.getElementById('review-action-card');
+  if (card) {
+    card.innerHTML = `
+      <div class="card-header"><h3>予約確認ステータス</h3></div>
+      <div style="padding:16px 20px">
+        <span class="status-badge reviewed" style="font-size:13px;padding:6px 14px">✓ 確認済み</span>
+        <p class="text-muted" style="margin-top:10px;font-size:12.5px">この予約は確認済みです。</p>
+      </div>`;
+  }
+
+  // Update unreviewed badge count
+  updateUnreviewedBadge();
+
+  showToast('✓ 予約を確認済みにしました。', 'success');
 }
 
-function doReject() {
-  closeModal('modal-reject');
-  showToast('予約を拒否しました。予約者へ通知メールを送信しました。', 'danger');
-  setTimeout(() => navigate('bookings'), 800);
+function updateUnreviewedBadge() {
+  const count = BOOKINGS.filter(b => b.reviewStatus === 'unreviewed').length;
+  const badge = document.getElementById('nav-unreviewed-badge');
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 }
 
 
@@ -161,10 +187,10 @@ function renderBookings() {
 
   tbody.innerHTML = BOOKINGS.map(b => {
     const s = STATUS_LABELS[b.status] || { label: b.status, cls: '' };
-    const actions = b.status === 'pending'
-      ? `<button class="btn btn-success btn-sm" onclick="navigate('booking-detail')">承認</button>
-         <button class="btn btn-ghost btn-sm" onclick="navigate('booking-detail')">詳細</button>`
-      : `<button class="btn btn-ghost btn-sm" onclick="navigate('booking-detail')">詳細</button>`;
+    const r = REVIEW_LABELS[b.reviewStatus] || { label: b.reviewStatus, cls: '' };
+    const reviewBtn = b.reviewStatus === 'unreviewed'
+      ? `<button class="btn btn-primary btn-sm" onclick="navigate('booking-detail')">確認済みにする</button>`
+      : '';
     return `<tr>
       <td class="order-no">${b.id}</td>
       <td>${b.activity}</td>
@@ -173,7 +199,11 @@ function renderBookings() {
       <td>${b.pax}</td>
       <td class="price-value">¥${b.total.toLocaleString()}</td>
       <td><span class="status-badge ${s.cls}">${s.label}</span></td>
-      <td>${actions}</td>
+      <td><span class="status-badge ${r.cls}">${r.label}</span></td>
+      <td style="white-space:nowrap">
+        ${reviewBtn}
+        <button class="btn btn-ghost btn-sm" onclick="navigate('booking-detail')">詳細</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -207,7 +237,6 @@ function drawChart() {
 
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
 
-  // Y grid lines
   [0, 0.25, 0.5, 0.75, 1].forEach(t => {
     const y = PAD.top + chartH * (1 - t);
     const val = Math.round(max * t);
@@ -215,7 +244,6 @@ function drawChart() {
     svg += `<text x="${PAD.left - 4}" y="${y + 4}" text-anchor="end" font-size="10" fill="#94A3B8">${val}</text>`;
   });
 
-  // Bars + labels
   CHART_DATA.values.forEach((v, i) => {
     const x = PAD.left + gap * i + (gap - barW) / 2;
     const barH = (v / max) * chartH;
@@ -268,11 +296,12 @@ function saveSchedule() {
    CSV EXPORT
 =================================================== */
 function exportCSV() {
-  const header = ['受注番号', 'アクティビティ', '開催日時', '予約者名', '人数', '合計金額', 'ステータス'];
+  const header = ['受注番号', 'アクティビティ', '開催日時', '予約者名', '人数', '合計金額', '予約ステータス', '確認ステータス'];
   const rows = BOOKINGS.map(b => [
     b.id, b.activity, b.scheduleDate, b.traveler, b.pax,
     `¥${b.total.toLocaleString()}`,
     STATUS_LABELS[b.status]?.label || b.status,
+    REVIEW_LABELS[b.reviewStatus]?.label || b.reviewStatus,
   ]);
   const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -306,6 +335,6 @@ function showToast(msg, type = '') {
 window.addEventListener('DOMContentLoaded', () => {
   setupNav();
   renderBookings();
-  // Chart is rendered after a small delay to let the layout settle
+  updateUnreviewedBadge();
   setTimeout(drawChart, 50);
 });
